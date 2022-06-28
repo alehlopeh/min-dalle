@@ -1,2 +1,2 @@
 torch
-flax
+flax==0.4.2

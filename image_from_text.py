@@ -1,5 +1,6 @@
 import argparse
 import os
+import subprocess
 from PIL import Image
 
 from min_dalle.generate_image import generate_image_from_text
@@ -16,15 +17,6 @@ parser.add_argument('--text', type=str)
 parser.add_argument('--seed', type=int, default=0)
 parser.add_argument('--image_path', type=str, default='generated')
 parser.add_argument('--image_token_count', type=int, default=256) # for debugging
-
-
-def ascii_from_image(image: Image.Image, size: int) -> str:
-    rgb_pixels = image.resize((size, int(0.55 * size))).convert('L').getdata()
-    chars = list('.,;/IOX')
-    chars = [chars[i * len(chars) // 256] for i in rgb_pixels]
-    chars = [chars[i * size: (i + 1) * size] for i in range(size // 2)]
-    return '\n'.join(''.join(row) for row in chars)
-
 
 def save_image(image: Image.Image, path: str):
     if os.path.isdir(path):
@@ -48,7 +40,9 @@ if __name__ == '__main__':
         seed = args.seed,
         image_token_count = args.image_token_count
     )
-    
+
     if image != None:
-        save_image(image, args.image_path)
-        print(ascii_from_image(image, size=128))
+        path = args.text.replace(" ", "_")
+        save_image(image, path)
+        path += ".png"
+        subprocess.run(["open", path])
