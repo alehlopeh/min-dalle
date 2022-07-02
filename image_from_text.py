@@ -42,7 +42,7 @@ if __name__ == '__main__':
     )
 
     if image != None:
-        path = args.text.replace(" ", "_")
+        path = args.text.replace(" ", "_") + "_" + args.seed.__str__()
         save_image(image, path)
         path += ".png"
         subprocess.run(["open", path])
